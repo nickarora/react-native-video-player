@@ -1,10 +1,9 @@
 import React, { FC } from "react";
-import Video, { VideoProperties } from "react-native-video";
+import Video from "react-native-video";
+import { VideoPlayerProps } from "./types";
 
-interface VideoPlayerProps extends VideoProperties {}
-
-const VideoPlayer: FC<VideoPlayerProps> = (props) => {
-  return <Video {...props} />;
+const VideoPlayer: FC<VideoPlayerProps> = ({ video }) => {
+  return <Video source={video} />;
 };
 
 export default VideoPlayer;

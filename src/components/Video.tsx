@@ -6,7 +6,10 @@ import { useEndPlayback } from "../hooks/useEndPlayback";
 import { useOnLoadCallback } from "../hooks/useOnLoadCallback";
 import { useOnProgressCallback } from "../hooks/useOnProgressCallback";
 import { useOnVideoPress } from "../hooks/useOnVideoPress";
+import { useToggleFullScreen } from "../hooks/useToggleFullScreen";
 import { VideoPlayerProps, SizeStyles } from "../types";
+import VideoControls from "./VideoControls";
+import VideoSeekBar from "./VideoSeekBar";
 
 interface VideoProps extends VideoPlayerProps {
   sizeStyles: SizeStyles;
@@ -31,14 +34,13 @@ const Video: FC<VideoProps> = ({
   disableControlsAutoHide,
   controlsTimeout,
   onHideControls,
+  disableSeek,
+  disableFullscreen,
   ...props
 }) => {
   const videoRef = useRef<RNVideo>(null);
 
-  const {
-    isMuted,
-    isPlaying,
-  } = usePlayerContext();
+  const { isMuted, isPlaying, controlsVisible } = usePlayerContext();
 
   const endPlayback = useEndPlayback({
     onEnd,
@@ -53,11 +55,13 @@ const Video: FC<VideoProps> = ({
     onProgress,
   });
 
+  const toggleFullScreen = useToggleFullScreen();
+
   const onPress = useOnVideoPress({
     onShowControls,
     onHideControls,
     disableControlsAutoHide,
-    controlsTimeout
+    controlsTimeout,
   });
 
   const onLongPress = useCallback(() => {
@@ -65,7 +69,7 @@ const Video: FC<VideoProps> = ({
       return;
     }
 
-    // toggleFullScreen();
+    toggleFullScreen();
   }, [fullScreenOnLongPress]);
 
   return (
@@ -89,9 +93,21 @@ const Video: FC<VideoProps> = ({
           onLongPress={onLongPress}
         />
       </View>
-      {/* {!isPlaying || controlsVisible
-        ? this.renderControls()
-        : this.renderSeekBar(true)} */}
+      {!isPlaying || controlsVisible ? (
+        <VideoControls
+          customStyles={customStyles}
+          disableFullscreen={disableFullscreen}
+          muted={muted}
+          disableSeek={disableSeek}
+          onPress={onPress}
+        />
+      ) : (
+        <VideoSeekBar
+          fullWidth
+          disableSeek={disableSeek}
+          customStyles={customStyles}
+        />
+      )}
     </View>
   );
 };

@@ -1,0 +1,54 @@
+import { useCallback } from "react";
+import { usePlayerContext } from "./usePlayerContext";
+import { useHideControls } from "./useHideControls";
+import { VideoPlayerProps } from "../types";
+
+type UseOnStartPress = (
+  config: Pick<
+    VideoPlayerProps,
+    "onStart" | "onHideControls" | "disableControlsAutoHide" | "controlsTimeout"
+  >
+) => () => void;
+
+export const useOnStartPress: UseOnStartPress = ({
+  onStart,
+  onHideControls,
+  disableControlsAutoHide,
+  controlsTimeout,
+}) => {
+  const {
+    controlsTimeoutId,
+    progress,
+    setIsPlaying,
+    setHasStarted,
+    setHasEnded,
+    setProgress,
+    setControlsTimeoutId,
+  } = usePlayerContext();
+
+  const hideControls = useHideControls({
+    disableControlsAutoHide,
+    onHideControls,
+    controlsTimeout,
+  });
+
+  return useCallback(() => {
+    onStart && onStart();
+
+    setIsPlaying(true);
+    setHasStarted(true);
+    setHasEnded(false);
+    setProgress(progress === 1 ? 0 : progress);
+    
+    hideControls();
+  }, [
+    progress,
+    controlsTimeoutId,
+    onStart,
+    setIsPlaying,
+    setHasStarted,
+    setHasEnded,
+    setProgress,
+    setControlsTimeoutId,
+  ]);
+};

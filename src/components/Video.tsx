@@ -35,6 +35,7 @@ const Video: FC<VideoProps> = ({
   controlsTimeout,
   onHideControls,
   disableSeek,
+  onMutePress,
   disableFullscreen,
   ...props
 }) => {
@@ -100,6 +101,8 @@ const Video: FC<VideoProps> = ({
           muted={muted}
           disableSeek={disableSeek}
           onPress={onPress}
+          onMutePress={onMutePress}
+          onShowControls={onShowControls}
         />
       ) : (
         <VideoSeekBar

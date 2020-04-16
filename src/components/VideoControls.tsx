@@ -1,15 +1,21 @@
 import React, { FC, useCallback } from "react";
 import { View, TouchableOpacity, StyleSheet } from "react-native";
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import Icon from "react-native-vector-icons/MaterialIcons";
 import { usePlayerContext } from "../hooks/usePlayerContext";
 import { useToggleFullScreen } from "../hooks/useToggleFullScreen";
+import { useOnMutePress } from "../hooks/useOnMutePress";
 import { VideoPlayerProps } from "../types";
 import VideoSeekBar from "./VideoSeekBar";
 
 interface VideVideoControlsProps
   extends Pick<
     VideoPlayerProps,
-    "customStyles" | "disableFullscreen" | "muted" | "disableSeek"
+    | "customStyles"
+    | "disableFullscreen"
+    | "muted"
+    | "disableSeek"
+    | "onMutePress"
+    | "onShowControls"
   > {
   onPress(): void;
 }
@@ -20,10 +26,16 @@ const VideoControls: FC<VideVideoControlsProps> = ({
   onPress,
   muted: showMuteButtton,
   disableSeek,
+  onMutePress,
+  onShowControls,
 }) => {
   const { isPlaying, isMuted } = usePlayerContext();
 
-  const onMutePress = useCallback(() => {}, []);
+  const mutePress = useOnMutePress({
+    onMutePress,
+    onShowControls,
+  });
+
   const onToggleFullScreen = useToggleFullScreen();
 
   return (
@@ -45,7 +57,7 @@ const VideoControls: FC<VideVideoControlsProps> = ({
       <VideoSeekBar disableSeek={disableSeek} customStyles={customStyles} />
       {showMuteButtton ? null : (
         <TouchableOpacity
-          onPress={onMutePress}
+          onPress={mutePress}
           style={customStyles.controlButton}
         >
           <Icon

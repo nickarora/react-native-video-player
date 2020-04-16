@@ -18,22 +18,14 @@ const VideoSeekBar: FC<VideoSeekBarProps> = ({
 
   const onLayout = useCallback(
     (event: LayoutChangeEvent) => {
-      let padding = 20;
-
-      const customStyle = (customStyles.seekBar || {}) as ViewStyle;
-      const { paddingHorizontal, paddingLeft, paddingRight } = customStyle;
-
-      if (paddingHorizontal !== undefined) {
-        padding = parseInt(customStyle.paddingHorizontal as string, 10) * 2;
-      } else if (paddingLeft !== undefined || paddingRight !== undefined) {
-        padding = parseInt(customStyle.paddingLeft as string, 10) || 0;
-        padding += parseInt(customStyle.paddingRight as string, 10) || 0;
-      }
-
+      const padding = calculatePadding(
+        (customStyles.seekBar || {}) as ViewStyle
+      );
       setSeekBarWidth(event.nativeEvent.layout.width - padding);
     },
-    [setSeekBarWidth]
+    [setSeekBarWidth, customStyles]
   );
+
   const onStartShouldSetResponder = useCallback(() => true, []);
   const onMoveShouldSetResponder = useCallback(() => true, []);
 
@@ -84,6 +76,21 @@ const VideoSeekBar: FC<VideoSeekBarProps> = ({
       />
     </View>
   );
+};
+
+const calculatePadding = (seekBarStyle: ViewStyle) => {
+  let padding = 20;
+
+  const { paddingHorizontal, paddingLeft, paddingRight } = seekBarStyle;
+
+  if (paddingHorizontal !== undefined) {
+    padding = parseInt(paddingHorizontal as string, 10) * 2;
+  } else if (paddingLeft !== undefined || paddingRight !== undefined) {
+    padding = parseInt(paddingLeft as string, 10) || 0;
+    padding += parseInt(paddingRight as string, 10) || 0;
+  }
+
+  return padding;
 };
 
 export const styles = StyleSheet.create({

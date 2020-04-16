@@ -1,10 +1,5 @@
 import React, { FC, useCallback, useState } from "react";
-import {
-  View,
-  LayoutChangeEvent,
-  StyleSheet,
-  ViewStyle,
-} from "react-native";
+import { View, LayoutChangeEvent, StyleSheet, ViewStyle } from "react-native";
 import { usePlayerContext } from "../hooks/usePlayerContext";
 import { VideoPlayerProps } from "../types";
 
@@ -21,30 +16,27 @@ const VideoSeekBar: FC<VideoSeekBarProps> = ({
   const { progress, isSeeking } = usePlayerContext();
   const [seekBarWidth, setSeekBarWidth] = useState(200);
 
-  const onLayout = useCallback((event: LayoutChangeEvent) => {
-    let padding = 20;
+  const onLayout = useCallback(
+    (event: LayoutChangeEvent) => {
+      let padding = 20;
 
-    const customStyle = (customStyles.seekBar as any) as ViewStyle;
+      const customStyle = (customStyles.seekBar || {}) as ViewStyle;
+      const { paddingHorizontal, paddingLeft, paddingRight } = customStyle;
 
-    if (!customStyle) {
+      if (paddingHorizontal !== undefined) {
+        padding = parseInt(customStyle.paddingHorizontal as string, 10) * 2;
+      } else if (paddingLeft !== undefined || paddingRight !== undefined) {
+        padding = parseInt(customStyle.paddingLeft as string, 10) || 0;
+        padding += parseInt(customStyle.paddingRight as string, 10) || 0;
+      }
+
       setSeekBarWidth(event.nativeEvent.layout.width - padding);
-    }
-
-    if (customStyle.paddingHorizontal) {
-      padding = parseInt(customStyle.paddingHorizontal as string, 10) * 2;
-    } else if (
-      customStyle.paddingLeft !== undefined ||
-      customStyle.paddingRight !== undefined
-    ) {
-      padding = parseInt(customStyle.paddingLeft as string, 10) || 0;
-      padding += parseInt(customStyle.paddingRight as string, 10) || 0;
-    }
-
-    setSeekBarWidth(event.nativeEvent.layout.width - padding);
-  }, [setSeekBarWidth]);
+    },
+    [setSeekBarWidth]
+  );
   const onStartShouldSetResponder = useCallback(() => true, []);
   const onMoveShouldSetResponder = useCallback(() => true, []);
-  
+
   const onSeekGrant = useCallback(() => {}, []);
   const onSeek = useCallback(() => {}, []);
   const onSeekRelease = useCallback(() => {}, []);

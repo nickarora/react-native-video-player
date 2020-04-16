@@ -1,8 +1,8 @@
 import React, { FC } from "react";
-import { View } from "react-native";
 import { usePlayerContext } from "../hooks/usePlayerContext";
 import { VideoPlayerProps, SizeStyles } from "../types";
 import VideoPlaceholder from "./VideoPlaceholder";
+import Video from "./Video";
 
 interface VideoContentProps
   extends Omit<
@@ -22,7 +22,7 @@ const VideoContent: FC<VideoContentProps> = ({ width, ...props }) => {
     return <VideoPlaceholder sizeStyles={sizeStyles} {...props} />;
   }
 
-  return <View />;
+  return <Video sizeStyles={sizeStyles} {...props} />;
 };
 
 const createSizeStyles = ({

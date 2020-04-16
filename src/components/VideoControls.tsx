@@ -1,6 +1,6 @@
 import React, { FC, useCallback } from "react";
 import { View, TouchableOpacity, StyleSheet } from "react-native";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import { usePlayerContext } from "../hooks/usePlayerContext";
 import { useToggleFullScreen } from "../hooks/useToggleFullScreen";
 import { VideoPlayerProps } from "../types";

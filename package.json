@@ -1,8 +1,8 @@
 {
   "name": "react-native-video-player",
-  "version": "0.10.0",
+  "version": "0.2.0",
   "description": "A video player for React Native with controls",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "prepare": "install-peers",
     "test": "echo \"Error: no test specified\" && exit 1",

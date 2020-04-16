@@ -1,18 +1,17 @@
 import React, { FC } from "react";
 import { TouchableOpacity, StyleSheet } from "react-native";
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import Icon from "react-native-vector-icons/MaterialIcons";
 import { useOnStartPress } from "../hooks/useOnStartPress";
 import { VideoPlayerProps } from "../types";
 
-interface VideoStartButtonProps
-  extends Pick<
-    VideoPlayerProps,
-    | "customStyles"
-    | "onStart"
-    | "onHideControls"
-    | "disableControlsAutoHide"
-    | "controlsTimeout"
-  > {}
+type VideoStartButtonProps = Pick<
+  VideoPlayerProps,
+  | "customStyles"
+  | "onStart"
+  | "onHideControls"
+  | "disableControlsAutoHide"
+  | "controlsTimeout"
+>;
 
 const VideoStartButton: FC<VideoStartButtonProps> = ({
   customStyles = {},

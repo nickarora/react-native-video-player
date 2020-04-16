@@ -72,10 +72,10 @@ const VideoSeekBar: FC<VideoSeekBarProps> = ({
     (event: GestureResponderEvent) => {
       const diff = event.nativeEvent.pageX - onSeekData.seekTouchPageX;
       const ratio = 100 / seekBarWidth;
-      const progress = onSeekData.seekBeginProgress + (ratio * diff) / 100;
+      const seekProgress = onSeekData.seekBeginProgress + (ratio * diff) / 100;
 
-      setProgress(progress);
-      seekTo(progress * duration);
+      setProgress(seekProgress);
+      seekTo(seekProgress * duration);
     },
     [onSeekData, setProgress, seekTo, duration]
   );
@@ -131,7 +131,7 @@ const VideoSeekBar: FC<VideoSeekBarProps> = ({
   );
 };
 
-const calculatePadding = (seekBarStyle: ViewStyle) => {
+const calculatePadding = (seekBarStyle: ViewStyle): number => {
   let padding = 20;
 
   const { paddingHorizontal, paddingLeft, paddingRight } = seekBarStyle;

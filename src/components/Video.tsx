@@ -7,10 +7,10 @@ import { useOnLoadCallback } from "../hooks/useOnLoadCallback";
 import { useOnProgressCallback } from "../hooks/useOnProgressCallback";
 import { useOnVideoPress } from "../hooks/useOnVideoPress";
 import { useToggleFullScreen } from "../hooks/useToggleFullScreen";
+import { useShowControls } from "../hooks/useShowControls";
 import { VideoPlayerProps, SizeStyles } from "../types";
 import VideoControls from "./VideoControls";
 import VideoSeekBar from "./VideoSeekBar";
-import { useShowControls } from "../hooks/useShowControls";
 
 interface VideoProps extends VideoPlayerProps {
   sizeStyles: SizeStyles;
@@ -47,6 +47,7 @@ const Video: FC<VideoProps> = ({
   const endPlayback = useEndPlayback({
     onEnd,
     videoRef,
+    loop,
   });
 
   const onLoadCallback = useOnLoadCallback({
@@ -59,9 +60,20 @@ const Video: FC<VideoProps> = ({
 
   const toggleFullScreen = useToggleFullScreen();
 
-  const onPress = useOnVideoPress({
+  const onPressVideo = useOnVideoPress({
+    pauseOnPress,
     onShowControls,
     onHideControls,
+    onPlayPress,
+    disableControlsAutoHide,
+    controlsTimeout,
+  });
+
+  const onPressPlayPause = useOnVideoPress({
+    pauseOnPress: true,
+    onShowControls,
+    onHideControls,
+    onPlayPress,
     disableControlsAutoHide,
     controlsTimeout,
   });
@@ -78,9 +90,12 @@ const Video: FC<VideoProps> = ({
     onShowControls,
   });
 
-  const seekTo = useCallback((time: number) => {
-    videoRef.current?.seek(time);
-  }, [videoRef]);
+  const seekTo = useCallback(
+    (time: number) => {
+      videoRef.current?.seek(time);
+    },
+    [videoRef]
+  );
 
   return (
     <View style={customStyles.videoWrapper}>
@@ -99,7 +114,7 @@ const Video: FC<VideoProps> = ({
       <View style={[sizeStyles, { marginTop: -sizeStyles.height }]}>
         <TouchableOpacity
           style={styles.overlayButton}
-          onPress={onPress}
+          onPress={onPressVideo}
           onLongPress={onLongPress}
         />
       </View>
@@ -109,7 +124,7 @@ const Video: FC<VideoProps> = ({
           disableFullscreen={disableFullscreen}
           muted={muted}
           disableSeek={disableSeek}
-          onPress={onPress}
+          onPress={onPressPlayPause}
           onMutePress={onMutePress}
           seekTo={seekTo}
           showControls={showControls}

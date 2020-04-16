@@ -12,6 +12,7 @@ type UseOnVideoPress = (
     | "disableControlsAutoHide"
     | "controlsTimeout"
     | "onPlayPress"
+    | "pauseOnPress"
   >
 ) => () => void;
 
@@ -20,7 +21,8 @@ export const useOnVideoPress: UseOnVideoPress = ({
   onShowControls,
   disableControlsAutoHide,
   controlsTimeout,
-  onPlayPress
+  onPlayPress,
+  pauseOnPress,
 }) => {
   const { isPlaying, setIsPlaying } = usePlayerContext();
 
@@ -38,7 +40,9 @@ export const useOnVideoPress: UseOnVideoPress = ({
     showControls();
     hideControls();
 
-    onPlayPress && onPlayPress();
-    setIsPlaying(!isPlaying);
-  }, [showControls, hideControls, onPlayPress, isPlaying]);
+    if (pauseOnPress) {
+      onPlayPress && onPlayPress();
+      setIsPlaying(!isPlaying);
+    }
+  }, [showControls, hideControls, onPlayPress, isPlaying, pauseOnPress]);
 };

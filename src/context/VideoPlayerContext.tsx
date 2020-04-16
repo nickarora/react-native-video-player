@@ -1,6 +1,7 @@
 import React, { FC, useState } from "react";
 import { VideoPlayerProps } from "../types";
 
+// eslint-disable-next-line
 const noop: (val: any) => void = () => {};
 
 export interface PlayerContextTypes {

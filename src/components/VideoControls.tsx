@@ -15,25 +15,27 @@ interface VideVideoControlsProps
     | "muted"
     | "disableSeek"
     | "onMutePress"
-    | "onShowControls"
   > {
   onPress(): void;
+  seekTo(time: number): void;
+  showControls(): void;
 }
 
 const VideoControls: FC<VideVideoControlsProps> = ({
   customStyles = {},
   disableFullscreen = false,
   onPress,
+  seekTo,
+  showControls,
   muted: showMuteButtton,
   disableSeek,
   onMutePress,
-  onShowControls,
 }) => {
   const { isPlaying, isMuted } = usePlayerContext();
 
   const mutePress = useOnMutePress({
     onMutePress,
-    onShowControls,
+    showControls,
   });
 
   const onToggleFullScreen = useToggleFullScreen();
@@ -54,7 +56,12 @@ const VideoControls: FC<VideVideoControlsProps> = ({
           size={32}
         />
       </TouchableOpacity>
-      <VideoSeekBar disableSeek={disableSeek} customStyles={customStyles} />
+      <VideoSeekBar
+        disableSeek={disableSeek}
+        customStyles={customStyles}
+        seekTo={seekTo}
+        showControls={showControls}
+      />
       {showMuteButtton ? null : (
         <TouchableOpacity
           onPress={mutePress}

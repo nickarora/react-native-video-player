@@ -1,20 +1,45 @@
 import React, { FC, useCallback, useState } from "react";
-import { View, LayoutChangeEvent, StyleSheet, ViewStyle } from "react-native";
+import {
+  View,
+  LayoutChangeEvent,
+  StyleSheet,
+  ViewStyle,
+  GestureResponderEvent,
+} from "react-native";
 import { usePlayerContext } from "../hooks/usePlayerContext";
 import { VideoPlayerProps } from "../types";
 
 interface VideoSeekBarProps
   extends Pick<VideoPlayerProps, "customStyles" | "disableSeek"> {
   fullWidth?: boolean;
+  seekTo(time: number): void;
+  showControls(): void;
 }
 
 const VideoSeekBar: FC<VideoSeekBarProps> = ({
   fullWidth = false,
   disableSeek = false,
   customStyles = {},
+  seekTo,
+  showControls,
 }) => {
-  const { progress, isSeeking } = usePlayerContext();
+  const {
+    duration,
+    progress,
+    isSeeking,
+    isPlaying,
+    setIsSeeking,
+    setIsPlaying,
+    setProgress,
+  } = usePlayerContext();
+
   const [seekBarWidth, setSeekBarWidth] = useState(200);
+
+  const [onSeekData, setOnSeekData] = useState({
+    seekTouchPageX: 0,
+    seekBeginProgress: progress,
+    seekBeginIsPlaying: isPlaying,
+  });
 
   const onLayout = useCallback(
     (event: LayoutChangeEvent) => {
@@ -29,9 +54,37 @@ const VideoSeekBar: FC<VideoSeekBarProps> = ({
   const onStartShouldSetResponder = useCallback(() => true, []);
   const onMoveShouldSetResponder = useCallback(() => true, []);
 
-  const onSeekGrant = useCallback(() => {}, []);
-  const onSeek = useCallback(() => {}, []);
-  const onSeekRelease = useCallback(() => {}, []);
+  const onSeekGrant = useCallback(
+    (event: GestureResponderEvent) => {
+      setOnSeekData({
+        seekTouchPageX: event.nativeEvent.pageX,
+        seekBeginProgress: progress,
+        seekBeginIsPlaying: isPlaying,
+      });
+
+      setIsSeeking(true);
+      setIsPlaying(false);
+    },
+    [setOnSeekData, progress, isPlaying, setIsSeeking, setIsPlaying]
+  );
+
+  const onSeek = useCallback(
+    (event: GestureResponderEvent) => {
+      const diff = event.nativeEvent.pageX - onSeekData.seekTouchPageX;
+      const ratio = 100 / seekBarWidth;
+      const progress = onSeekData.seekBeginProgress + (ratio * diff) / 100;
+
+      setProgress(progress);
+      seekTo(progress * duration);
+    },
+    [onSeekData, setProgress, seekTo, duration]
+  );
+
+  const onSeekRelease = useCallback(() => {
+    setIsSeeking(true);
+    setIsPlaying(onSeekData.seekBeginIsPlaying);
+    showControls();
+  }, [setIsSeeking, setIsPlaying, onSeekData]);
 
   return (
     <View

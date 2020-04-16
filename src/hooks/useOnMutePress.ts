@@ -1,20 +1,20 @@
 import { useCallback } from "react";
 import { VideoPlayerProps } from "../types";
 import { usePlayerContext } from "./usePlayerContext";
-import { useShowControls } from "./useShowControls";
+
+interface PressMuteConfig extends Pick<VideoPlayerProps, "onMutePress"> {
+  showControls(): void;
+}
 
 type UseOnMutePress = (
-  config: Pick<VideoPlayerProps, "onMutePress" | "onShowControls">
+  config: PressMuteConfig
 ) => () => void;
 
 export const useOnMutePress: UseOnMutePress = ({
   onMutePress,
-  onShowControls
+  showControls
 }) => {
   const { isMuted, setIsMuted } = usePlayerContext();
-  const showControls = useShowControls({
-    onShowControls,
-  });
   
   return useCallback(() => {
     onMutePress && onMutePress();

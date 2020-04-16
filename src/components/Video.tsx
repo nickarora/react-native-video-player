@@ -10,6 +10,7 @@ import { useToggleFullScreen } from "../hooks/useToggleFullScreen";
 import { VideoPlayerProps, SizeStyles } from "../types";
 import VideoControls from "./VideoControls";
 import VideoSeekBar from "./VideoSeekBar";
+import { useShowControls } from "../hooks/useShowControls";
 
 interface VideoProps extends VideoPlayerProps {
   sizeStyles: SizeStyles;
@@ -73,6 +74,14 @@ const Video: FC<VideoProps> = ({
     toggleFullScreen();
   }, [fullScreenOnLongPress]);
 
+  const showControls = useShowControls({
+    onShowControls,
+  });
+
+  const seekTo = useCallback((time: number) => {
+    videoRef.current?.seek(time);
+  }, [videoRef]);
+
   return (
     <View style={customStyles.videoWrapper}>
       <RNVideo
@@ -102,13 +111,16 @@ const Video: FC<VideoProps> = ({
           disableSeek={disableSeek}
           onPress={onPress}
           onMutePress={onMutePress}
-          onShowControls={onShowControls}
+          seekTo={seekTo}
+          showControls={showControls}
         />
       ) : (
         <VideoSeekBar
           fullWidth
           disableSeek={disableSeek}
           customStyles={customStyles}
+          seekTo={seekTo}
+          showControls={showControls}
         />
       )}
     </View>

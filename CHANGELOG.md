@@ -1,3 +1,7 @@
+## 0.2.0
+ - Significant internal refactors
+ - Added typescript support
+
 ## 0.9.1
  - Fixed video repeating when loop turned off (thanks @mattvot)
 

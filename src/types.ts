@@ -57,6 +57,8 @@ export interface VideoPlayerProps {
   onEnd?: VideoProperties["onEnd"];
   onProgress?: VideoProperties["onProgress"];
   onLoad?: VideoProperties["onLoad"];
+  onFullscreenPlayerWillPresent: VideoProperties["onFullscreenPlayerWillPresent"];
+  onFullscreenPlayerWillDismiss: VideoProperties["onFullscreenPlayerWillDismiss"];
   onStart?(): void;
   onPlayPress?(): void;
   onHideControls?(): void;

@@ -37,12 +37,19 @@ const Video: FC<VideoProps> = ({
   onHideControls,
   disableSeek,
   onMutePress,
+  onFullscreenPlayerWillDismiss,
+  onFullscreenPlayerWillPresent,
   disableFullscreen,
   ...props
 }) => {
   const videoRef = useRef<RNVideo>(null);
 
-  const { isMuted, isPlaying, controlsVisible } = usePlayerContext();
+  const {
+    isMuted,
+    isPlaying,
+    controlsVisible,
+    setIsPlaying,
+  } = usePlayerContext();
 
   const endPlayback = useEndPlayback({
     onEnd,
@@ -58,7 +65,9 @@ const Video: FC<VideoProps> = ({
     onProgress,
   });
 
-  const toggleFullScreen = useToggleFullScreen();
+  const toggleFullScreen = useToggleFullScreen({
+    videoRef,
+  });
 
   const onPressVideo = useOnVideoPress({
     pauseOnPress,
@@ -97,6 +106,20 @@ const Video: FC<VideoProps> = ({
     [videoRef]
   );
 
+  const fullScreenPlayerWillPresent = useCallback(() => {
+    onFullscreenPlayerWillPresent && onFullscreenPlayerWillPresent();
+  }, [onFullscreenPlayerWillPresent]);
+
+  const fullScreenPlayerWillDismiss = useCallback(() => {
+    onFullscreenPlayerWillDismiss && onFullscreenPlayerWillDismiss();
+  }, [onFullscreenPlayerWillDismiss, isPlaying]);
+
+  const fullScreenPlayerDidDismiss = useCallback(() => {
+    // on iOS, react-native-video paused the video when full screen is dismissed
+    // this operation ensures react state is in sync with the video player
+    setIsPlaying(false);
+  }, [setIsPlaying]);
+
   return (
     <View style={customStyles.videoWrapper}>
       <RNVideo
@@ -110,6 +133,9 @@ const Video: FC<VideoProps> = ({
         onLoad={onLoadCallback}
         source={video}
         resizeMode={resizeMode}
+        onFullscreenPlayerWillPresent={fullScreenPlayerWillPresent}
+        onFullscreenPlayerWillDismiss={fullScreenPlayerWillDismiss}
+        onFullscreenPlayerDidDismiss={fullScreenPlayerDidDismiss}
       />
       <View style={[sizeStyles, { marginTop: -sizeStyles.height }]}>
         <TouchableOpacity
@@ -128,6 +154,7 @@ const Video: FC<VideoProps> = ({
           onMutePress={onMutePress}
           seekTo={seekTo}
           showControls={showControls}
+          onToggleFullScreen={toggleFullScreen}
         />
       ) : (
         <VideoSeekBar

@@ -81,7 +81,7 @@ const VideoSeekBar: FC<VideoSeekBarProps> = ({
   );
 
   const onSeekRelease = useCallback(() => {
-    setIsSeeking(true);
+    setIsSeeking(false);
     setIsPlaying(onSeekData.seekBeginIsPlaying);
     showControls();
   }, [setIsSeeking, setIsPlaying, onSeekData]);

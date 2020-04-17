@@ -2,7 +2,6 @@ import React, { FC } from "react";
 import { View, TouchableOpacity, StyleSheet } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { usePlayerContext } from "../hooks/usePlayerContext";
-import { useToggleFullScreen } from "../hooks/useToggleFullScreen";
 import { useOnMutePress } from "../hooks/useOnMutePress";
 import { VideoPlayerProps } from "../types";
 import VideoSeekBar from "./VideoSeekBar";
@@ -19,6 +18,7 @@ interface VideVideoControlsProps
   onPress(): void;
   seekTo(time: number): void;
   showControls(): void;
+  onToggleFullScreen(): void;
 }
 
 const VideoControls: FC<VideVideoControlsProps> = ({
@@ -30,6 +30,7 @@ const VideoControls: FC<VideVideoControlsProps> = ({
   muted: showMuteButtton,
   disableSeek,
   onMutePress,
+  onToggleFullScreen,
 }) => {
   const { isPlaying, isMuted } = usePlayerContext();
 
@@ -37,8 +38,6 @@ const VideoControls: FC<VideVideoControlsProps> = ({
     onMutePress,
     showControls,
   });
-
-  const onToggleFullScreen = useToggleFullScreen();
 
   return (
     <View style={[styles.controls, customStyles.controls]}>

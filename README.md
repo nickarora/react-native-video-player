@@ -3,14 +3,23 @@
 A React Native video player with a few controls. This player uses
 react-native-video for the video playback.
 
+This is a fork of [Cornedor's react-native-video-player](https://github.com/cornedor/react-native-video-player)
+
+## Why was this forked?
+
+The original repo had some long standing issues that were gaining no traction.  Making contributions to the original repo was difficult because it was written as one large javascript class; this made tackling bugs and adding additional features difficult.  By contrast, this version has been entirely written in typescript using separate components where appropriate.  It has the added benefit of working seemlessly with typescript projects. 
+
+In order to ensure it is a drop in replacement, all of the original props have been maintained.
 
 ## Installation
 
+In addition to `react` and `react-native` you will need to install additional peer dependencies:
+
 ```
-npm install --save react-native-video-player react-native-video react-native-vector-icons
-react-native link react-native-video
-react-native link react-native-vector-icons
+yarn add react-native-video-player react-native-video react-native-vector-icons
 ```
+
+Afterward, please make sure you follow the linking instructions provided by [react-native-video](https://github.com/react-native-community/react-native-video) and [react-native-vector-icons](https://github.com/oblador/react-native-vector-icons).
 
 ## Props
 
@@ -71,12 +80,6 @@ All other props are passed to the react-native-video component.
 | pause                   |                 | Pause the playback.                                                       |
 | resume                  |                 | Resume the playback.                                                      |
 
-## Future features
+## Development
 
-- [X] Make seek bar seekable.
-- [x] Make player customizable.
-- [ ] Add volume control
-- [X] Add fullscreen button
-  - [ ] Add fullscreen button for Android (See PR #38 if you need fullscreen in Android)
-- [ ] Add loader
-- [ ] Add video duration/play time
+Clone this repo and run `yarn install`; this will install the dev dependencies and trigger an install of peer dependencies.  Make changes to `src` and run `yarn build` before submitting a PR.

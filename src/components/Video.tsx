@@ -2,6 +2,7 @@ import React, { useCallback, useRef } from "react";
 import { Platform, View, TouchableOpacity, StyleSheet } from "react-native";
 import RNVideo from "react-native-video";
 import { usePlayerContext } from "../hooks/usePlayerContext";
+import { useCoordinatorContext } from "../hooks/useCoordinatorContext";
 import { useEndPlayback } from "../hooks/useEndPlayback";
 import { useOnLoadCallback } from "../hooks/useOnLoadCallback";
 import { useOnProgressCallback } from "../hooks/useOnProgressCallback";
@@ -12,6 +13,7 @@ import { useSeekTo } from "../hooks/useSeekTo";
 import { usePause } from "../hooks/usePause";
 import { useResume } from "../hooks/useResume";
 import { useStop } from "../hooks/useStop";
+import { useRestorePosition } from "../hooks/useRestorePosition";
 import { VideoPlayerProps, SizeStyles } from "../types";
 import VideoWrapper from "./VideoWrapper";
 import VideoControls from "./VideoControls";
@@ -58,7 +60,11 @@ const Video = React.forwardRef<VideoWrapper, VideoProps>(
       isPlaying,
       controlsVisible,
       setIsPlaying,
+      isFullscreen,
+      currentTime,
     } = usePlayerContext();
+
+    const { fullscreen } = useCoordinatorContext();
 
     const endPlayback = useEndPlayback({
       onEnd,
@@ -112,20 +118,21 @@ const Video = React.forwardRef<VideoWrapper, VideoProps>(
     const pause = usePause({ showControls });
     const resume = useResume({ showControls });
     const stop = useStop({ showControls, seekTo });
-    
-    const fullScreenPlayerWillPresent = useCallback(() => {
-      onFullscreenPlayerWillPresent && onFullscreenPlayerWillPresent();
-    }, [onFullscreenPlayerWillPresent]);
-
-    const fullScreenPlayerWillDismiss = useCallback(() => {
-      onFullscreenPlayerWillDismiss && onFullscreenPlayerWillDismiss();
-    }, [onFullscreenPlayerWillDismiss, isPlaying]);
 
     const fullScreenPlayerDidDismiss = useCallback(() => {
       // on iOS, react-native-video paused the video when full screen is dismissed
       // this operation ensures react state is in sync with the video player
       setIsPlaying(false);
     }, [setIsPlaying]);
+
+    useRestorePosition({
+      videoRef,
+      currentTime,
+    });
+
+    const videoStyles = isFullscreen
+      ? [styles.video, sizeStyles]
+      : [styles.video, sizeStyles, style, customStyles.video];
 
     return (
       <VideoWrapper
@@ -138,17 +145,17 @@ const Video = React.forwardRef<VideoWrapper, VideoProps>(
       >
         <RNVideo
           {...props}
-          style={[styles.video, sizeStyles, style, customStyles.video]}
+          style={videoStyles}
           ref={videoRef}
           muted={muted || isMuted}
-          paused={paused || !isPlaying}
+          paused={fullscreen !== isFullscreen ? true : paused || !isPlaying}
           onProgress={onProgressCallback}
           onEnd={endPlayback}
           onLoad={onLoadCallback}
           source={video}
           resizeMode={resizeMode}
-          onFullscreenPlayerWillPresent={fullScreenPlayerWillPresent}
-          onFullscreenPlayerWillDismiss={fullScreenPlayerWillDismiss}
+          onFullscreenPlayerWillPresent={onFullscreenPlayerWillPresent}
+          onFullscreenPlayerWillDismiss={onFullscreenPlayerWillDismiss}
           onFullscreenPlayerDidDismiss={fullScreenPlayerDidDismiss}
         />
         <View style={[sizeStyles, { marginTop: -sizeStyles.height }]}>
@@ -171,13 +178,15 @@ const Video = React.forwardRef<VideoWrapper, VideoProps>(
             onToggleFullScreen={toggleFullScreen}
           />
         ) : (
-          <VideoSeekBar
-            fullWidth
-            disableSeek={disableSeek}
-            customStyles={customStyles}
-            seekTo={seekTo}
-            showControls={showControls}
-          />
+          <View style={styles.seekBarWrapper}>
+            <VideoSeekBar
+              fullWidth
+              disableSeek={disableSeek}
+              customStyles={customStyles}
+              seekTo={seekTo}
+              showControls={showControls}
+            />
+          </View>
         )}
       </VideoWrapper>
     );
@@ -187,6 +196,9 @@ const Video = React.forwardRef<VideoWrapper, VideoProps>(
 const styles = StyleSheet.create({
   video: {
     backgroundColor: Platform.Version >= 24 ? undefined : "black",
+  },
+  seekBarWrapper: {
+    flexDirection: "row",
   },
   overlayButton: {
     flex: 1,

@@ -1,46 +1,34 @@
-import React, { useState, useCallback } from "react";
-import { View, LayoutChangeEvent } from "react-native";
+import React from "react";
 import { VideoPlayerProvider } from "../context/VideoPlayerContext";
+import { useCoordinatorContext } from "../hooks/useCoordinatorContext";
 import VideoWrapper from "./VideoWrapper";
-import VideoContent from "./VideoContent";
+import VideoLayout from "./VideoLayout";
 import { VideoPlayerProps } from "../types";
 
-const defaultWidth = 200;
-
-const VideoPlayer = React.forwardRef<VideoWrapper, VideoPlayerProps>(
+const VideoPlayer = React.forwardRef<VideoWrapper, VideoPlayerProps & {
+  isFullscreen?: boolean
+}>(
   (
     {
       autoplay = false,
       defaultMuted = false,
       hideControlsOnStart = false,
-      customStyles = {},
+      isFullscreen = false,
       ...props
     },
     ref
   ) => {
-    const [width, setWidth] = useState(defaultWidth);
-
-    const onLayout = useCallback(
-      (event: LayoutChangeEvent) => {
-        setWidth(event.nativeEvent.layout.width);
-      },
-      [setWidth]
-    );
-
+    const { playerState } = useCoordinatorContext();
+    
     return (
       <VideoPlayerProvider
         autoplay={autoplay}
         defaultMuted={defaultMuted}
         hideControlsOnStart={hideControlsOnStart}
+        isFullscreen={isFullscreen}
+        priorState={playerState}
       >
-        <View onLayout={onLayout} style={customStyles.wrapper}>
-          <VideoContent
-            ref={ref}
-            width={width}
-            customStyles={customStyles}
-            {...props}
-          />
-        </View>
+        <VideoLayout {...props} ref={ref} />
       </VideoPlayerProvider>
     );
   }

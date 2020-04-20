@@ -54,6 +54,7 @@ export interface VideoPlayerProps {
   pauseOnPress?: boolean;
   fullScreenOnLongPress?: boolean;
   customStyles?: VideoPlayerCustomStyles;
+  testID?: ViewProps["testID"];
   onEnd?: VideoProperties["onEnd"];
   onProgress?: VideoProperties["onProgress"];
   onLoad?: VideoProperties["onLoad"];

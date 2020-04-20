@@ -1,5 +1,6 @@
 import React, { Component, RefObject } from "react";
-import VideoPlayer from "./components/VideoPlayer";
+import { CoordinatorContextProvider } from "./context/CoordinatorContext";
+import PlayerCoordinator from "./components/PlayerCoordinator";
 import VideoWrapper from "./components/VideoWrapper";
 import { VideoPlayerProps } from "./types";
 
@@ -29,7 +30,11 @@ class RNVideoPlayer extends Component<VideoPlayerProps> {
   }
 
   render() {
-    return <VideoPlayer ref={this.videoPlayerRef} {...this.props} />;
+    return (
+      <CoordinatorContextProvider>
+        <PlayerCoordinator ref={this.videoPlayerRef} {...this.props} />
+      </CoordinatorContextProvider>
+    );
   }
 }
 

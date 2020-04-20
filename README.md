@@ -7,19 +7,23 @@ This is a fork of [Cornedor's react-native-video-player](https://github.com/corn
 
 ## Why was this forked?
 
-The original repo had some long standing issues that were gaining no traction.  Making contributions to the original repo was difficult because it was written as one large javascript class; this made tackling bugs and adding additional features difficult.  By contrast, this version has been entirely written in typescript using separate components where appropriate.  It has the added benefit of working seemlessly with typescript projects. 
-
-In order to ensure it is a drop in replacement, all of the original props have been maintained.
+The original repo had some long standing issues that were gaining no traction (such as the ability to view android in full screen).  Making contributions to the original repo was difficult because it was written as one large javascript class; this made tackling bugs and adding additional features difficult.  By contrast, this version has been entirely written in typescript using separate components where appropriate. In order to ensure it is a drop in replacement, all of the original props have been maintained.
 
 ## Installation
 
 In addition to `react` and `react-native` you will need to install additional peer dependencies:
 
 ```
-yarn add react-native-video-player react-native-video react-native-vector-icons
+yarn add react-native-video-player react-native-video react-native-vector-icons react-native-orientation-locker
 ```
 
-Afterward, please make sure you follow the linking instructions provided by [react-native-video](https://github.com/react-native-community/react-native-video) and [react-native-vector-icons](https://github.com/oblador/react-native-vector-icons).
+Afterward, please make sure you follow the linking instructions provided by [react-native-video](https://github.com/react-native-community/react-native-video), [react-native-vector-icons](https://github.com/oblador/react-native-vector-icons), and [react-native-orientation-locker](https://www.npmjs.com/package/react-native-orientation-locker)
+
+**Important Note**: 
+
+-- Fullscreen on Android will require that you configure react-native-video for EXOPlayer; by default it will use the standard android media player. See [this thread](https://github.com/react-native-community/react-native-video/issues/1746) for more information.  To utilize Exoplayer, you will need to modify for your eact-native config before linking.
+
+-- This has been tested against ReactNative 0.62 (the latest at the time of this writing); If you are having issues, consider upgrading to match the required peer dependencies.
 
 ## Props
 
@@ -48,7 +52,10 @@ Afterward, please make sure you follow the linking instructions provided by [rea
 | onPlayPress             | Callback for when the play button is pressed.                                               |
 | onHideControls          | Callback for when the controls are being hide.                                              |
 | onShowControls          | Callback for when the controls are being shown.                                             |
+| onFullscreenPlayerWillPresent | triggered when ther user attempts to open in full screen. |
+| onFullscreenPlayerWillDismiss | triggered when ther closes the player in full screen. |
 | customStyles            | The player can be customized in this object, see customStyles for the options.              |
+
 
 All other props are passed to the react-native-video component.
 

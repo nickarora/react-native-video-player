@@ -1,10 +1,8 @@
 import React, { FC, useState } from "react";
 import { VideoPlayerProps } from "../types";
+import { noop } from "../utils";
 
-// eslint-disable-next-line
-const noop: (val: any) => void = () => {};
-
-export interface PlayerContextTypes {
+export interface PlayerContextState {
   hasStarted: boolean;
   isPlaying: boolean;
   hasEnded: boolean;
@@ -14,6 +12,10 @@ export interface PlayerContextTypes {
   controlsTimeoutId?: number;
   controlsVisible: boolean;
   duration: number;
+  currentTime: number;
+}
+
+interface PlayerContextUpdaters {
   setHasStarted(val: boolean): void;
   setIsPlaying(val: boolean): void;
   setHasEnded(val: boolean): void;
@@ -23,7 +25,13 @@ export interface PlayerContextTypes {
   setControlsTimeoutId(val: number | undefined): void;
   setControlsVisible(val: boolean): void;
   setDuration(val: number): void;
+  setCurrentTime(val: number): void;
 }
+
+export type PlayerContextTypes = PlayerContextState &
+  PlayerContextUpdaters & {
+    isFullscreen: boolean;
+  };
 
 const VideoPlayerContext = React.createContext<PlayerContextTypes>({
   hasStarted: false,
@@ -34,6 +42,7 @@ const VideoPlayerContext = React.createContext<PlayerContextTypes>({
   isMuted: false,
   controlsVisible: true,
   duration: 0,
+  currentTime: 0,
   setHasStarted: noop,
   setIsPlaying: noop,
   setHasEnded: noop,
@@ -43,20 +52,29 @@ const VideoPlayerContext = React.createContext<PlayerContextTypes>({
   setControlsTimeoutId: noop,
   setControlsVisible: noop,
   setDuration: noop,
+  setCurrentTime: noop,
+  isFullscreen: false,
 });
 
 export const VideoPlayerProvider: FC<Required<
-  Pick<VideoPlayerProps, "autoplay" | "defaultMuted" | "hideControlsOnStart">
->> = ({ autoplay, defaultMuted, hideControlsOnStart, children }) => {
-  const [hasStarted, setHasStarted] = useState(autoplay);
-  const [isPlaying, setIsPlaying] = useState(autoplay);
-  const [hasEnded, setHasEnded] = useState(false);
-  const [isSeeking, setIsSeeking] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [isMuted, setIsMuted] = useState(defaultMuted);
+  Pick<
+    VideoPlayerProps,
+    "autoplay" | "defaultMuted" | "hideControlsOnStart"
+  > & {
+    priorState: PlayerContextState | undefined;
+    isFullscreen: boolean;
+  }
+>> = ({ autoplay, defaultMuted, hideControlsOnStart, priorState, isFullscreen, children }) => {
+  const [hasStarted, setHasStarted] = useState(priorState?.hasStarted || autoplay);
+  const [isPlaying, setIsPlaying] = useState(priorState?.isPlaying || autoplay);
+  const [hasEnded, setHasEnded] = useState(priorState?.isSeeking || false);
+  const [isSeeking, setIsSeeking] = useState(priorState?.isSeeking || false);
+  const [progress, setProgress] = useState(priorState?.progress || 0);
+  const [isMuted, setIsMuted] = useState(priorState?.isMuted || defaultMuted);
+  const [duration, setDuration] = useState(priorState?.duration ||0);
+  const [currentTime, setCurrentTime] = useState(priorState?.currentTime || 0);
   const [controlsTimeoutId, setControlsTimeoutId] = useState<number>();
   const [controlsVisible, setControlsVisible] = useState(!hideControlsOnStart);
-  const [duration, setDuration] = useState(0);
 
   return (
     <VideoPlayerContext.Provider
@@ -70,6 +88,7 @@ export const VideoPlayerProvider: FC<Required<
         controlsTimeoutId,
         controlsVisible,
         duration,
+        currentTime,
         setHasStarted,
         setIsPlaying,
         setHasEnded,
@@ -79,6 +98,8 @@ export const VideoPlayerProvider: FC<Required<
         setControlsTimeoutId,
         setControlsVisible,
         setDuration,
+        isFullscreen,
+        setCurrentTime,
       }}
     >
       {children}

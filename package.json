@@ -22,7 +22,8 @@
   "repository": "cornedor/react-native-video-player",
   "peerDependencies": {
     "react": "^16.9.0",
-    "react-native": "^0.61.5",
+    "react-native": "^0.62.0",
+    "react-native-orientation-locker": "^1.1.8",
     "react-native-vector-icons": "^6.6.0",
     "react-native-video": "^5.0.2"
   },

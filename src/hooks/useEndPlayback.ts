@@ -5,11 +5,19 @@ import { VideoPlayerProps } from "../types";
 
 interface EndConfig extends Pick<VideoPlayerProps, "onEnd" | "loop"> {
   videoRef: RefObject<Video | null>;
+  isFullscreen: boolean;
+  toggleFullscreen(): void;
 }
 
 type UseEndPlayback = (config: EndConfig) => () => void;
 
-export const useEndPlayback: UseEndPlayback = ({ onEnd, loop, videoRef }) => {
+export const useEndPlayback: UseEndPlayback = ({
+  onEnd,
+  loop,
+  videoRef,
+  isFullscreen,
+  toggleFullscreen,
+}) => {
   const {
     setHasStarted,
     setHasEnded,
@@ -29,6 +37,10 @@ export const useEndPlayback: UseEndPlayback = ({ onEnd, loop, videoRef }) => {
     }
 
     videoRef.current?.seek(0);
+
+    if (isFullscreen) {
+      toggleFullscreen();
+    }
   }, [
     onEnd,
     loop,

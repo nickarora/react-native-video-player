@@ -3,6 +3,8 @@ import Video from "react-native-video";
 import { VideoPlayerProps } from "../types";
 interface EndConfig extends Pick<VideoPlayerProps, "onEnd" | "loop"> {
     videoRef: RefObject<Video | null>;
+    isFullscreen: boolean;
+    toggleFullscreen(): void;
 }
 declare type UseEndPlayback = (config: EndConfig) => () => void;
 export declare const useEndPlayback: UseEndPlayback;

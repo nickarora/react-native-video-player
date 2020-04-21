@@ -66,12 +66,6 @@ const Video = React.forwardRef<VideoWrapper, VideoProps>(
 
     const { fullscreen } = useCoordinatorContext();
 
-    const endPlayback = useEndPlayback({
-      onEnd,
-      videoRef,
-      loop,
-    });
-
     const onLoadCallback = useOnLoadCallback({
       onLoad,
     });
@@ -80,8 +74,16 @@ const Video = React.forwardRef<VideoWrapper, VideoProps>(
       onProgress,
     });
 
-    const toggleFullScreen = useToggleFullScreen({
+    const toggleFullscreen = useToggleFullScreen({
       videoRef,
+    });
+
+    const endPlayback = useEndPlayback({
+      onEnd,
+      videoRef,
+      loop,
+      isFullscreen,
+      toggleFullscreen
     });
 
     const onPressVideo = useOnVideoPress({
@@ -107,7 +109,7 @@ const Video = React.forwardRef<VideoWrapper, VideoProps>(
         return;
       }
 
-      toggleFullScreen();
+      toggleFullscreen();
     }, [fullScreenOnLongPress]);
 
     const showControls = useShowControls({
@@ -175,7 +177,7 @@ const Video = React.forwardRef<VideoWrapper, VideoProps>(
             onMutePress={onMutePress}
             seekTo={seekTo}
             showControls={showControls}
-            onToggleFullScreen={toggleFullScreen}
+            onToggleFullScreen={toggleFullscreen}
           />
         ) : (
           <View style={styles.seekBarWrapper}>

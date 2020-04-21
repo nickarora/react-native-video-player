@@ -33,19 +33,21 @@ const Video = React.forwardRef((_a, ref) => {
     const videoRef = useRef(null);
     const { isMuted, isPlaying, controlsVisible, setIsPlaying, isFullscreen, currentTime, } = usePlayerContext();
     const { fullscreen } = useCoordinatorContext();
-    const endPlayback = useEndPlayback({
-        onEnd,
-        videoRef,
-        loop,
-    });
     const onLoadCallback = useOnLoadCallback({
         onLoad,
     });
     const onProgressCallback = useOnProgressCallback({
         onProgress,
     });
-    const toggleFullScreen = useToggleFullScreen({
+    const toggleFullscreen = useToggleFullScreen({
         videoRef,
+    });
+    const endPlayback = useEndPlayback({
+        onEnd,
+        videoRef,
+        loop,
+        isFullscreen,
+        toggleFullscreen
     });
     const onPressVideo = useOnVideoPress({
         pauseOnPress,
@@ -67,7 +69,7 @@ const Video = React.forwardRef((_a, ref) => {
         if (!fullScreenOnLongPress) {
             return;
         }
-        toggleFullScreen();
+        toggleFullscreen();
     }, [fullScreenOnLongPress]);
     const showControls = useShowControls({
         onShowControls,
@@ -93,7 +95,7 @@ const Video = React.forwardRef((_a, ref) => {
         <View style={[sizeStyles, { marginTop: -sizeStyles.height }]}>
           <TouchableOpacity style={styles.overlayButton} onPress={onPressVideo} onLongPress={onLongPress}/>
         </View>
-        {!isPlaying || controlsVisible ? (<VideoControls customStyles={customStyles} disableFullscreen={disableFullscreen} muted={muted} disableSeek={disableSeek} onPress={onPressPlayPause} onMutePress={onMutePress} seekTo={seekTo} showControls={showControls} onToggleFullScreen={toggleFullScreen}/>) : (<View style={styles.seekBarWrapper}>
+        {!isPlaying || controlsVisible ? (<VideoControls customStyles={customStyles} disableFullscreen={disableFullscreen} muted={muted} disableSeek={disableSeek} onPress={onPressPlayPause} onMutePress={onMutePress} seekTo={seekTo} showControls={showControls} onToggleFullScreen={toggleFullscreen}/>) : (<View style={styles.seekBarWrapper}>
             <VideoSeekBar fullWidth disableSeek={disableSeek} customStyles={customStyles} seekTo={seekTo} showControls={showControls}/>
           </View>)}
       </VideoWrapper>);

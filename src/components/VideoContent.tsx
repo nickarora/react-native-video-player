@@ -70,7 +70,8 @@ const createSizeStyles = (
   const windowWidth = windowDimensions.width;
   const windowHeight = windowDimensions.height - (StatusBar.currentHeight || 0);
 
-  return orientation === "landscape"
+  return orientation === "landscape" &&
+    windowDimensions.width > windowDimensions.height
     ? {
         width: windowHeight * (videoWidth / videoHeight),
         height: windowHeight,

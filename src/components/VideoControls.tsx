@@ -32,7 +32,7 @@ const VideoControls: FC<VideVideoControlsProps> = ({
   onMutePress,
   onToggleFullScreen,
 }) => {
-  const { isPlaying, isMuted } = usePlayerContext();
+  const { isPlaying, isMuted, isFullscreen } = usePlayerContext();
 
   const mutePress = useOnMutePress({
     onMutePress,
@@ -80,7 +80,7 @@ const VideoControls: FC<VideVideoControlsProps> = ({
         >
           <Icon
             style={[styles.extraControl, customStyles.controlIcon]}
-            name="fullscreen"
+            name={isFullscreen ? "fullscreen-exit" : "fullscreen"}
             size={32}
           />
         </TouchableOpacity>

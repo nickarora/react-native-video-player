@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, RefObject } from "react";
 import { TouchableOpacity, Modal, View, StyleSheet } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import VideoWrapper from "./VideoWrapper";
@@ -11,16 +11,16 @@ import { VideoPlayerProps } from "../types";
 const PlayerCoordinator = React.forwardRef<VideoWrapper, VideoPlayerProps>(
   (props, ref) => {
     useOrientation();
-    const { fullscreen, setFullscreen } = useCoordinatorContext();
+    const { fullscreen } = useCoordinatorContext();
 
     useFullscreenHooks({
       onFullscreenPlayerWillDismiss: props.onFullscreenPlayerWillDismiss,
       onFullscreenPlayerWillPresent: props.onFullscreenPlayerWillPresent,
     });
 
-    const onRequestClose = useCallback(() => setFullscreen(false), [
-      setFullscreen,
-    ]);
+    const onRequestClose = useCallback(() => {
+      (ref as RefObject<VideoWrapper>)?.current?.toggleFullscreen();
+    }, [ref]);
 
     return !fullscreen ? (
       <VideoPlayer ref={ref} {...props} />

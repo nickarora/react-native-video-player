@@ -83,7 +83,7 @@ const Video = React.forwardRef<VideoWrapper, VideoProps>(
       videoRef,
       loop,
       isFullscreen,
-      toggleFullscreen
+      toggleFullscreen,
     });
 
     const onPressVideo = useOnVideoPress({
@@ -144,6 +144,7 @@ const Video = React.forwardRef<VideoWrapper, VideoProps>(
         pause={pause}
         stop={stop}
         resume={resume}
+        toggleFullscreen={toggleFullscreen}
       >
         <RNVideo
           {...props}

@@ -14,6 +14,9 @@ class VideoWrapper extends Component {
     resume() {
         this.props.resume();
     }
+    toggleFullscreen() {
+        this.props.toggleFullscreen();
+    }
     render() {
         return <View style={this.props.style}>{this.props.children}</View>;
     }

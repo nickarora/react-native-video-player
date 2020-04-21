@@ -16,6 +16,7 @@ export const useToggleFullScreen = ({ videoRef }) => {
                 setPlayerState(stateFromPlayerContext(Object.assign(Object.assign({}, playerContext), { isPlaying: wasPlaying })));
                 setFullscreen(!fullscreen);
             }, 0);
+            return;
         }
         (_a = videoRef.current) === null || _a === void 0 ? void 0 : _a.presentFullscreenPlayer();
     }, [videoRef, fullscreen, setFullscreen, setPlayerState, playerContext]);

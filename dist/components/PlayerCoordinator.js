@@ -7,14 +7,15 @@ import { useOrientation } from "../hooks/useOrientation";
 import { useFullscreenHooks } from "../hooks/useFullscreenHooks";
 const PlayerCoordinator = React.forwardRef((props, ref) => {
     useOrientation();
-    const { fullscreen, setFullscreen } = useCoordinatorContext();
+    const { fullscreen } = useCoordinatorContext();
     useFullscreenHooks({
         onFullscreenPlayerWillDismiss: props.onFullscreenPlayerWillDismiss,
         onFullscreenPlayerWillPresent: props.onFullscreenPlayerWillPresent,
     });
-    const onRequestClose = useCallback(() => setFullscreen(false), [
-        setFullscreen,
-    ]);
+    const onRequestClose = useCallback(() => {
+        var _a, _b;
+        (_b = (_a = ref) === null || _a === void 0 ? void 0 : _a.current) === null || _b === void 0 ? void 0 : _b.toggleFullscreen();
+    }, [ref]);
     return !fullscreen ? (<VideoPlayer ref={ref} {...props}/>) : (<Modal onRequestClose={onRequestClose}>
         <View style={styles.modalContent}>
           <VideoPlayer ref={ref} {...props} isFullscreen/>

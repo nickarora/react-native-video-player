@@ -7,6 +7,7 @@ interface VideoWrapperProps {
   stop(): void;
   pause(): void;
   resume(): void;
+  toggleFullscreen(): void;
 }
 
 /* primarily exists to catch refs */
@@ -25,6 +26,10 @@ class VideoWrapper extends Component<VideoWrapperProps> {
 
   resume() {
     this.props.resume();
+  }
+
+  toggleFullscreen() {
+    this.props.toggleFullscreen();
   }
 
   render() {

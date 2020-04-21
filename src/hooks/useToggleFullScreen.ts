@@ -34,6 +34,8 @@ export const useToggleFullScreen: UseToggleFullScreen = ({ videoRef }) => {
 
         setFullscreen(!fullscreen);
       }, 0);
+
+      return;
     }
 
     videoRef.current?.presentFullscreenPlayer();

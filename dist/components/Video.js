@@ -90,7 +90,7 @@ const Video = React.forwardRef((_a, ref) => {
     const videoStyles = isFullscreen
         ? [styles.video, sizeStyles]
         : [styles.video, sizeStyles, style, customStyles.video];
-    return (<VideoWrapper ref={ref} style={customStyles.videoWrapper} seek={seekTo} pause={pause} stop={stop} resume={resume}>
+    return (<VideoWrapper ref={ref} style={customStyles.videoWrapper} seek={seekTo} pause={pause} stop={stop} resume={resume} toggleFullscreen={toggleFullscreen}>
         <RNVideo {...props} style={videoStyles} ref={videoRef} muted={muted || isMuted} paused={fullscreen !== isFullscreen ? true : paused || !isPlaying} onProgress={onProgressCallback} onEnd={endPlayback} onLoad={onLoadCallback} source={video} resizeMode={resizeMode} onFullscreenPlayerWillPresent={onFullscreenPlayerWillPresent} onFullscreenPlayerWillDismiss={onFullscreenPlayerWillDismiss} onFullscreenPlayerDidDismiss={fullScreenPlayerDidDismiss}/>
         <View style={[sizeStyles, { marginTop: -sizeStyles.height }]}>
           <TouchableOpacity style={styles.overlayButton} onPress={onPressVideo} onLongPress={onLongPress}/>

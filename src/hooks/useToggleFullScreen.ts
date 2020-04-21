@@ -19,12 +19,21 @@ export const useToggleFullScreen: UseToggleFullScreen = ({ videoRef }) => {
   return useCallback(() => {
     if (Platform.OS === "android") {
       clearInterval(playerContext.controlsTimeoutId);
-      setPlayerState(stateFromPlayerContext(playerContext));
+
+      const wasPlaying = playerContext.isPlaying;
       playerContext.setIsPlaying(false);
-      
+
       // wait for next tick to minimize playback interruption
-      setTimeout(() => setFullscreen(!fullscreen), 0);
-      return;
+      setTimeout(() => {
+        setPlayerState(
+          stateFromPlayerContext({
+            ...playerContext,
+            isPlaying: wasPlaying,
+          })
+        );
+
+        setFullscreen(!fullscreen);
+      }, 0);
     }
 
     videoRef.current?.presentFullscreenPlayer();
@@ -41,7 +50,7 @@ const stateFromPlayerContext: StateFromPlayerContext = ({
   isMuted,
   controlsVisible,
   duration,
-  currentTime
+  currentTime,
 }) => ({
   hasStarted,
   isPlaying,
@@ -51,5 +60,5 @@ const stateFromPlayerContext: StateFromPlayerContext = ({
   isMuted,
   controlsVisible,
   duration,
-  currentTime
+  currentTime,
 });
